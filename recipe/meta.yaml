@@ -13,7 +13,7 @@ source:
     - unvendorize.patch
 
 build:
-  number: 4
+  number: 5
   script: "{{ PYTHON }} -m pip install . --no-deps --ignore-installed --no-cache-dir -vvv"
 
 requirements:
@@ -35,7 +35,7 @@ test:
 
 about:
   home: https://github.com/hagberg/planarity/
-  license: BSD 3-Clause
+  license: BSD-3-Clause
   license_family: BSD
   license_file: LICENSE.txt
   summary: Python bindings for Planarity
