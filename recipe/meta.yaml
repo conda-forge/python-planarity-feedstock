@@ -1,5 +1,5 @@
 {% set name = "planarity" %}
-{% set version = "0.4.1" %}
+{% set version = "0.6" %}
 
 package:
   name: python-{{ name }}
@@ -8,12 +8,12 @@ package:
 source:
   fn: '{{ name }}-{{ version }}.tar.gz'
   url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
-  'sha256': '1c675ff4cd99c5a7de88fab51882630aa0a7fa796235abe5a4ccf57b128a5b6e'
+  'sha256': '9852691d9c0d05e26a2fcbf2fce5a2632e8847ec462e816fa02e72d35013da68'
   patches:
     - unvendorize.patch
 
 build:
-  number: 8
+  number: 0
   script: "{{ PYTHON }} -m pip install . --no-deps --ignore-installed --no-cache-dir -vvv"
 
 requirements:
@@ -22,6 +22,7 @@ requirements:
     - cross-python_{{ target_platform }}     # [build_platform != target_platform]
     - cython                                 # [build_platform != target_platform]
     - {{ compiler('c') }}
+    - {{ stdlib("c") }}
   host:
     - python
     - pip
