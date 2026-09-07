@@ -3,19 +3,19 @@ About python-planarity-feedstock
 
 Feedstock license: [BSD-3-Clause](https://github.com/conda-forge/python-planarity-feedstock/blob/main/LICENSE.txt)
 
-Home: https://github.com/hagberg/planarity/
+Home: https://github.com/graph-algorithms/planarity
 
 Package license: BSD-3-Clause
 
 Summary: Python bindings for Planarity
 
-Development: https://github.com/hagberg/planarity/
+Development: https://github.com/graph-algorithms/planarity
 
-Documentation: https://github.com/hagberg/planarity/blob/master/README.md
+Documentation: https://github.com/graph-algorithms/planarity/wiki
 
 Algorithms for graph planarity testing, forbidden subgraph
-finding, and planar embeddings. This provides a Python interface
-for part of Boyer's (C) planarity algorithms found at
+finding, and planar embeddings. This provides Python interfaces
+for the Edge Addition Planarity Suite and its graph library at
 https://github.com/graph-algorithms/edge-addition-planarity-suite
 
 
