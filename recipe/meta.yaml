@@ -7,14 +7,13 @@ package:
 
 source:
   fn: '{{ name }}-{{ version }}.tar.gz'
-  url: https://pypi.org/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
-  'sha256': '9129d2429fc54c70a976cdf59b21a9c6a542466cf49747c1bbce1f27d59f4f3e'
-  patches:
-    - unvendorize.patch
+  url: https://files.pythonhosted.org/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  sha256: 9129d2429fc54c70a976cdf59b21a9c6a542466cf49747c1bbce1f27d59f4f3e
 
 build:
   number: 0
-  script: "{{ PYTHON }} -m pip install . --no-deps --ignore-installed --no-cache-dir -vvv"
+  skip: true  # [py<310]
+  script: "{{ PYTHON }} -m pip install . --no-deps --no-build-isolation --ignore-installed --no-cache-dir -vvv"
 
 requirements:
   build:
@@ -28,28 +27,43 @@ requirements:
     - pip
     - setuptools
     - cython
-    - planarity
+    # Use upstream's bundled EAPS 5.0.0.0 until conda-forge provides it.
+    # The separately packaged Planarity 3.x/4.x APIs are incompatible.
   run:
     - python
-    - {{ pin_compatible('planarity', max_pin='x.x.x') }}
 
 test:
   imports:
     - planarity
+    - planarity.classic.planarity
+    - planarity.full.graphLib
+    - planarity.full.graph
+    - planarity.full.g6IterationUtils
+  source_files:
+    - tests
+  requires:
+    - pip
+    - pytest
+    - networkx
+  commands:
+    - python -m pip check
+    - python -m pytest -v tests
 
 about:
-  home: https://github.com/hagberg/planarity/
+  home: https://github.com/graph-algorithms/planarity
   license: BSD-3-Clause
   license_family: BSD
-  license_file: LICENSE.txt
+  license_file:
+    - LICENSE.txt
+    - planarity/c/LICENSE.TXT
   summary: Python bindings for Planarity
   description: |
     Algorithms for graph planarity testing, forbidden subgraph
-    finding, and planar embeddings. This provides a Python interface
-    for part of Boyer's (C) planarity algorithms found at
+    finding, and planar embeddings. This provides Python interfaces
+    for the Edge Addition Planarity Suite and its graph library at
     https://github.com/graph-algorithms/edge-addition-planarity-suite
-  doc_url: https://github.com/hagberg/planarity/blob/master/README.md
-  dev_url: https://github.com/hagberg/planarity/
+  doc_url: https://github.com/graph-algorithms/planarity/wiki
+  dev_url: https://github.com/graph-algorithms/planarity
 
 extra:
   recipe-maintainers:
