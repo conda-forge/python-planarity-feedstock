@@ -1,0 +1,60 @@
+diff --git a/planarity/planarity.pyx b/planarity/planarity.pyx
+--- a/planarity/planarity.pyx
++++ b/planarity/planarity.pyx
+@@ -3,7 +3,8 @@
+ """
+ Wrapper for Boyer's (C) planarity algorithms.
+ """
+-cimport cplanarity
++from . cimport cplanarity
++from libc.stdlib cimport free
+ import warnings
+ 
+ cdef class PGraph:
+@@ -55,7 +56,7 @@
+                 seen.add((u,v))
+             else:
+                 warnings.warn('ignoring parallel edge %s-%s'%(str(u),str(v)))
+-        self.embedding=cplanarity.NULL
++        self.embedding=0
+ 
+ 
+     def __dealloc__(self):
+@@ -152,8 +153,15 @@
+ 
+ 
+     def ascii(self):
++        cdef char *rendition = NULL
+         self.embed_drawplanar()
+-        return cplanarity._RenderToString(self.theGraph).decode('ascii')
++        status = cplanarity.gp_DrawPlanar_RenderToString(self.theGraph, &rendition)
++        try:
++            if status != cplanarity.OK or rendition == NULL:
++                raise RuntimeError("planarity: failed rendering graph.")
++            return rendition.decode('ascii')
++        finally:
++            free(rendition)
+ 
+ 
+     def write(self,path):
+diff --git a/planarity/cplanarity.pxd b/planarity/cplanarity.pxd
+--- a/planarity/cplanarity.pxd
++++ b/planarity/cplanarity.pxd
+@@ -19,7 +19,7 @@
+     cdef int gp_GetDirection(graphP theGraph, int v)
+ 
+ cdef extern from "planarity/graph.h":
+-    cdef int OK, NOTOK, NULL 
++    cdef int OK, NOTOK 
+     cdef int EMBEDFLAGS_PLANAR, NONEMBEDDABLE, EMBEDFLAGS_DRAWPLANAR
+     cdef int WRITE_ADJLIST
+     cdef int EDGEFLAG_DIRECTION_INONLY, EDGEFLAG_DIRECTION_OUTONLY  
+@@ -34,7 +34,7 @@
+ 
+ 
+ cdef extern from "planarity/graphDrawPlanar.h":
+-    cdef char * _RenderToString(graphP theEmbedding)
++    cdef int gp_DrawPlanar_RenderToString(graphP theEmbedding, char **pRenditionString)
+     cdef int gp_AttachDrawPlanar(graphP theGraph)
+ 
+ 

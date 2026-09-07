@@ -11,10 +11,11 @@ source:
   'sha256': '1c675ff4cd99c5a7de88fab51882630aa0a7fa796235abe5a4ccf57b128a5b6e'
   patches:
     - unvendorize.patch
+    - modernize-bindings.patch
 
 build:
   number: 9
-  script: "{{ PYTHON }} -m pip install . --no-deps --ignore-installed --no-cache-dir -vvv"
+  script: "{{ PYTHON }} -m pip install . --no-deps --no-build-isolation --ignore-installed --no-cache-dir -vvv"
 
 requirements:
   build:
@@ -28,7 +29,8 @@ requirements:
     - pip
     - setuptools
     - cython
-    - planarity
+    # The 0.4.1 bindings use the headers and API from Planarity 3.x.
+    - planarity >=3.0.2.0,<4
   run:
     - python
     - {{ pin_compatible('planarity', max_pin='x.x.x') }}
